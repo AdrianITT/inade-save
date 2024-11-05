@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+#import dj_database_url
 import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+
 #import secrets 
 #print(secrets.token_urlsafe(50))
 
@@ -93,6 +94,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+# Replace the SQLite DATABASES configuration with PostgreSQL:
+
+
+#postgresql://userroot:FW3NKHOM2S1i1QmcR5JYGBAUPyVtkKmS@dpg-csies4rgbbvc73fmtd10-a.oregon-postgres.render.com/dbinadepostgre
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
