@@ -15,6 +15,7 @@ urlpatterns = [
     path('', views_autenticacion.dashboard, name='dashboard'),
     path('login/', views_autenticacion.login_view, name='login'),
     path('logout/', views_autenticacion.logout_view, name='logout'),
+    #path('initial-setup/', views.initial_setup, name='initial_setup'),
     path('initial-setup/', initial_setup, name='initial_setup'),
 
     #   ---     RECUPERACIÓN DE CONTRASEÑA       ---

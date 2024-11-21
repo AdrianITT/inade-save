@@ -186,7 +186,7 @@ class CustomUser(AbstractUser):
         ('calidad', 'Calidad')
     ]
     rol = models.CharField(max_length=20, choices=AREA_CHOICES, blank=True, null=True, default='admin')
-    organizacion = models.ForeignKey(Organizacion,  on_delete=models.PROTECT)
+    organizacion = models.ForeignKey(Organizacion,  on_delete=models.PROTECT, default=1)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} | {self.username}"

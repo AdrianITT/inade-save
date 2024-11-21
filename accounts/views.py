@@ -52,3 +52,7 @@ def borrar_notificacion(request, pk):
     notificacion.delete()
     return JsonResponse({'success': True})
 
+# VISTA PARA REGISTRAS OTRA ORGANIZACION
+def initial_setup(request):
+    return render(request, 'initial_setup.html')
+

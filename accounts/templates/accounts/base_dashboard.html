@@ -10,7 +10,8 @@
     <!-- Carga de archivos estáticos de Django -->
     {% load static %}
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'img/droplet-half.svg' %}">
+    <!-- <link rel="icon" type="image/x-icon" href="{% static 'img/droplet-half.svg' %}">-->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/gatalogo.png' %}">
     <!-- Inclusión de CSS de Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -58,9 +59,10 @@
                         <!-- Por ejemplo, en cualquier archivo HTML como base.html o menu.html -->
 
                         {% if organization_logo %}
-                        <img src="{% static 'img/luck3.png' %}" alt="Logo de la Organización" style="max-height: 40px;"
+                        <!--<img src="{% static 'img/luck3.png' %}" alt="Logo de la Organización" style="max-height: 40px;"-->
+                            <img src="{% static 'img/inadelogo2.png' %}" alt="Logo de la Organización" style="max-height: 40px;"
                             class="mr-2">
-                            Lucresys
+                            Sistema INADE
                         {% else %}
                         <p>No logo available</p>
                         {% endif %}
@@ -196,7 +198,7 @@
             </ul>
 
             <div class="col text-center">
-                <img src="{% static 'img/luck1.png' %}" alt="Logo de la Organización" style="max-height: 150px;" class="mr-2">
+                <img src="{% static 'img/logo.png' %}" alt="Logo de la Organización" style="max-height: 150px;" class="mr-2">
             </div>
             
         </div>

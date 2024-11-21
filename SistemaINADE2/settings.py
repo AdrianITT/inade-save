@@ -33,10 +33,10 @@ SECRET_KEY = 'django-insecure-9%%ck*j+2bh9m*a5g&dv3ptj6%f=g33&7$s)k-jpjdx31z6#y^
 DEBUG = True
 
 # ID proyect: lucresys
-ALLOWED_HOSTS = ['lucresys.appspot.com','192.168.x.x', 'localhost', '127.0.0.1','2829-2806-2f0-1140-7c1d-74ce-5114-3dbc-fd02.ngrok-free.app']
+ALLOWED_HOSTS = ['lucresys.appspot.com','192.168.x.x', 'localhost', '127.0.0.1','www.inade-svr.mx']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://2829-2806-2f0-1140-7c1d-74ce-5114-3dbc-fd02.ngrok-free.app'
+    'https://9411-187-190-138-37.ngrok-free.app'
 ]
 
 # Application definition
