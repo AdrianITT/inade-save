@@ -93,12 +93,12 @@ def empresa_update(request,pk):
     else:
         empresa_form = EmpresaForm(instance=empresa)
         direccion_form = DireccionForm(instance=direccion)
-    return redirect(request, "empresas_cont_list",{
+    return render(request, "empresas_cont_list",{
         "empresa":empresa,
         "empresa_form":empresa_form,
         "direccion_form":direccion_form,
         })
-
+#accounts/empresas/empresas_editar.html
 # VISTA PARA ELIMINAR EMPRESA
 def empresa_delete(request, pk):
     empresa = get_object_or_404(Empresa, id=pk)

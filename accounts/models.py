@@ -19,7 +19,7 @@ formatos_cotizacion = [
 
 monedas = [
     ('MXN', 'MXN - Moneda Nacional Mexicana'),
-    #('USD', 'USD - Dolar Estadunidense')
+    ('USD', 'USD - Dolar Estadunidense')
 ]
 
 # MODELO PARA DIRECCION

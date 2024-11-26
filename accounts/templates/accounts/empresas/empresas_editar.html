@@ -43,14 +43,14 @@
                     <label for="id_rfc">Rfc:</label>
                     <input type="text" class="form-control" name="rfc" maxlength="50" id="id_rfc" value="{{ empresa.rfc }}">
 
-                    <label for="id_rfc">Rfc:</label>
-                    <input type="text" class="form-control" name="rfc" maxlength="50" id="id_rfc" value="{{ empresa.regimen_fiscal }}">
+                    <label for="id_regimen_fiscal">Régimen Fiscal:</label>
+                    <input type="text" class="form-control" name="regimen_fiscal" maxlength="50" id="id_regimen_fiscal" value="{{ empresa.regimen_fiscal }}">
         
                     <label for="id_moneda">Moneda:</label>
                     <select name="moneda" id="id_moneda" class="form-control">
                         <option value="" {% if empresa.moneda == "" %}selected{% endif %}>---------</option>
-                        <option value="mxn" {% if empresa.moneda == "mxn" %}selected{% endif %}>MXN - Moneda Nacional Mexicana</option>
-                        <option value="usd" {% if empresa.moneda == "usd" %}selected{% endif %}>USD - Dolar Estadunidense</option>
+                        <option value="MXN" {% if empresa.moneda == "mxn" %}selected{% endif %}>MXN - Moneda Nacional Mexicana</option>
+                        <option value="USD" {% if empresa.moneda == "usd" %}selected{% endif %}>USD - Dolar Estadunidense</option>
                     </select>
         
                     <label for="id_condiciones_pago">Condiciones pago por día:</label>
@@ -64,5 +64,18 @@
             <input type="button" class="btn btn-danger" value="Cancelar" onclick="location.href='{% url 'empresas_cont_list' %}'">
         </div>
     </form>
+    {% if empresa_form.errors or direccion_form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+            {% for field, errors in empresa_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+            {% for field, errors in direccion_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
 </div>
 {% endblock %}

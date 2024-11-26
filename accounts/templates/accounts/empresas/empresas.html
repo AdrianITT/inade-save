@@ -134,6 +134,12 @@
                                 <small class="form-text text-muted">Ingrese regimen fiscal.</small>
                             </p>
                             <p>
+                                {{ empresa_form.rfc.label_tag }}
+                                {{ empresa_form.rfc }}
+                                {{ empresa_form.rfc.errors }}
+                                <small class="form-text text-muted">Ingrese rfc.</small>
+                            </p>
+                            <p>
                                 {{ empresa_form.moneda.label_tag }}
                                 {{ empresa_form.moneda }}
                                 {{ empresa_form.moneda.errors }}

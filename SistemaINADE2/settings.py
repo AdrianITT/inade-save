@@ -189,5 +189,3 @@ LOGIN_URL = 'login/'  # Cambia esto a la URL correcta de tu página de inicio de
 USERNAME = "AranzaInade"
 PASSWORD = "Puebla4990"
 SANDBOX_URL = "https://apisandbox.facturama.mx"
-
-
