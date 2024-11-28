@@ -225,7 +225,7 @@ class CotizacionForm(forms.ModelForm):
         model = Cotizacion
         fields = ['fecha_solicitud', 'fecha_caducidad', 'metodo_pago','tasa_iva', 'notas', 'correos_adicionales']
         widgets = {
-            'fecha_solicitud': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+             'fecha_solicitud': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'fecha_caducidad': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'metodo_pago': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Selecciona Tipo de Moneda', 'required': 'True'}),
             'tasa_iva': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa la tasa de IVA'}),
