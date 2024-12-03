@@ -1,4 +1,5 @@
 # Importaciones estándar de Python
+from django.core.paginator import Paginator, EmptyPage
 from datetime import datetime
 from decimal import Decimal
 import os
@@ -25,6 +26,8 @@ from accounts.models import Concepto, Cotizacion, OrdenTrabajo, OrdenTrabajoConc
 from facturacion.models import CSD, Comprobante, Factura
 from .forms import (CSDForm, CancelarCFDI, ComprobantePagoForm, EmailForm, FacturaEncabezadoForm, FacturaForm, FacturaPieForm, FacturaTotalesForm)
 from django.core.paginator import Paginator
+# mansaje de info
+import logging
 
 # Obtener la zona horaria UTC
 utc_timezone = pytz.UTC
@@ -182,12 +185,16 @@ def facturas_list(request):
     cdfis_json = cfdis_all(emisor_rfc)
 
     # Obtén todas las facturas
-    facturas_queryset = Factura.objects.all()
+    facturas_queryset = Factura.objects.all().order_by('id')  # Cambia 'id' por un campo adecuado en tu modelo
     
     # Configura la paginación
     paginator = Paginator(facturas_queryset, 10)  # Muestra 10 facturas por página
     page_number = request.GET.get('page')  # Obtiene el número de página de la URL
-    facturas = paginator.get_page(page_number)  # Obtiene las facturas de la página actual
+    try:
+        facturas = paginator.get_page(page_number)
+    except EmptyPage:
+        facturas = paginator.get_page(paginator.num_pages)
+    #facturas = paginator.get_page(page_number)  # Obtiene las facturas de la página actual
 
     context = {
         'facturas': facturas,
@@ -399,6 +406,7 @@ def crear_factura(request, id_personalizado):
         pie_form = FacturaPieForm(request.POST, initial={'direccion': orden.direccion})
         totales_form = FacturaTotalesForm(request.POST)
         
+        
         if encabezado_form.is_valid() and pie_form.is_valid() and totales_form.is_valid():
 
             # Obteniendo datos de formularios
@@ -432,7 +440,7 @@ def crear_factura(request, id_personalizado):
                             # Convertimos a float si es necesario
                             cantidad_servicios = float(cantidad_servicios)
                             precio_unitario = float(servicio.precio_unitario)
-                            importe = precio_unitario * cantidad_servicios
+                            importe = float(precio_unitario * cantidad_servicios)
 
                             # Agregamos los datos del servicio a conceptos_data
                             conceptos_data.append({
@@ -445,11 +453,13 @@ def crear_factura(request, id_personalizado):
                                 'metodo': servicio.metodo,  # Método asociado al servicio
                                 'cantidad': cantidad_servicios,  # Cantidad de servicios
                                 'objeto_imp': servicio.objeto_impuesto,
-                                'importe': importe  # Importe total para ese servicio
+                                'importe': importe
+                                #'importe': importe  # Importe total para ese servicio
                             })
                     except Servicio.DoesNotExist:
                         # Si el servicio no existe, podrías lanzar una excepción o manejar el error de otra forma
                         raise ValueError(f"El servicio con el código {codigo_servicio} no existe.")
+            print(emisor.organizacion.direccion)
             
             cfdi_data = {
                 "NameId": "1",
@@ -492,18 +502,18 @@ def crear_factura(request, id_personalizado):
                         "UnitCode": concepto['unit_cfdi'],
                         "UnitPrice": float(concepto['precio']),
                         "Quantity": float(concepto['cantidad']),
-                        "Subtotal": float(concepto['importe']),
+                        "Subtotal": float(concepto['precio'])*float(concepto['cantidad']),
                         "TaxObject": concepto['objeto_imp'],
                         "Taxes": [
                             {
-                                "Total": float(concepto['importe']) * float(datos_t['tasa_iva']),
+                                "Total": float(datos_t['iva']),
                                 "Name": "IVA",
-                                "Base": float(concepto['importe']),
+                                "Base": float(datos_t['subtotal']),
                                 "Rate": float(datos_t['tasa_iva']),
                                 "IsRetention": 0
                             }
                         ],
-                        "Total": round(float(concepto['importe']) * (1+float(datos_t['tasa_iva'])),2)
+                        "Total":float(datos_t['total'])
                     }
                     for concepto in conceptos_data
                 ]
@@ -511,6 +521,7 @@ def crear_factura(request, id_personalizado):
             
             print(cfdi_data)
             response = crear_cfdi_api(cfdi_data)
+            #logging.info(emisor.organizacion.direccion.codigo)
 
             if response.status_code == 201:
                 

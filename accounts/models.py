@@ -210,6 +210,7 @@ class Empresa(models.Model):
     moneda = models.CharField(max_length=10, choices=tipo_moneda, blank=True, null=True)
     condiciones_pago = models.CharField(max_length=200, null=False, blank=True, default='15')
     first_configuration = models.BooleanField(default=False)
+    #direccion = models.ForeignKey(Direccion, on_delete=models.SET_NULL, null=True, blank=True)
     
     def __str__(self):
         return self.nombre_empresa
