@@ -384,8 +384,33 @@ def eliminar_csd(request):
             try:
                 organizacion = request.user.organizacion
                 # Eliminar los CSD asociados a la organización del usuario
-                CSD.objects.filter(organizacion=organizacion).delete()
-                return JsonResponse({'success': True})
+                csd = CSD.objects.filter(organizacion=organizacion).first()
+                
+                #id_organizacion=request.organizacion
+                
+                if csd:
+                    # URL de la API de Facturama
+                    url = f"{SANDBOX_URL}/api-lite/csds/{csd.rfc}"
+                    # Enviar la solicitud DELETE a la API de Facturama
+                    headers = {
+                        "Authorization": "12345678a",  # Reemplaza con tu API Key
+                        "Content-Type": "application/json"
+                    }
+                    response = requests.delete(url, auth=(USERNAME, PASSWORD))
+                    print(f"Status Code: {response.status_code}")
+                    
+                    if response.status_code == 200:
+                        CSD.objects.filter(organizacion=organizacion).delete()
+                        # Si la eliminación en la API fue exitosa, eliminamos el CSD localmente
+                        csd.delete()
+                        return JsonResponse({'success': True, 'message': 'CSD eliminado correctamente de la base de datos y la API'})
+                    else:
+                        return JsonResponse({'success': False, 'message': 'Error al eliminar el CSD desde la API', 'details': response.json()})
+
+                else:
+                    return JsonResponse({'success': False, 'message': 'CSD no encontrado'})
+
+                    #return JsonResponse({'success': True})
             except Exception as e:
                 return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Método no permitido'})

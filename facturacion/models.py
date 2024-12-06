@@ -25,6 +25,8 @@ class CSD(models.Model):
     cer_file = models.FileField(upload_to='csds/cer/')
     key_file = models.FileField(upload_to='csds/key/')
     password = models.CharField(max_length=255)
+    def __str__(self):
+        return self.rfc
 
 class Factura(models.Model):
     

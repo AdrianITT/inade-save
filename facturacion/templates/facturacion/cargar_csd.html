@@ -11,6 +11,50 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'img/droplet-half.svg' %}">
      <title>Cargar CSD</title>
+</head>
+
+<body>
+     <header class="">
+          <nav class="navbar bg-body-tertiary fixed-top">
+               <div class="container-fluid d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                         <!-- Botón del Regreso -->
+                         <a class="navbar-toggler ms-2" type="button" href="{% url 'config_org' %}"">
+                              <span class=""><img src="{% static 'img/arrow-left-square.svg' %}" style="width: 20pt;" alt=""></span>
+                         </a>
+                    </div>
+               </div>
+          </nav>
+     </header>
+
+     <div class="container mt-5" style="margin-top: 200pt;">
+          <h1 style="margin-top: 90pt;">Cargar Certificado de Sello Digital (CSD)</h1>
+
+          {% if messages %}
+          <ul class="messages">
+               {% for message in messages %}
+               <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                    {% endfor %}
+          </ul>
+          {% endif %}
+          <form method="POST" enctype="multipart/form-data">
+               {% csrf_token %}
+               {{ form.as_p }}
+               <div class="alert alert-warning " id="alert" role="alert">
+                    <h3 class="text-center">Consideraciones</h3>
+                    Valides Obligaciones
+                    <ol>
+                    <li>Habilitado para facturar (IVA exento, tasa 0% y 16%)</li>
+                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Norte</li>
+                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Sur</li>
+                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Norte y Sur</li>
+                    </ol>
+               </div>
+               <button type="submit" class="btn btn-primary">Cargar CSD</button>
+               <button type="button" class="btn btn-danger" id="delete-csd-btn">Eliminar CSD actuales</button>
+          </form>
+          
+     </div>
      <script>
           function validateForm() {
                const rfcInput = document.getElementById('id_rfc');
@@ -41,51 +85,32 @@
 
                return true; // Permite el envío del formulario
           }
+          document.getElementById('delete-csd-btn').addEventListener('click', function() {
+               // Confirmar si el usuario desea eliminar los CSD
+               if (confirm('¿Estás seguro de que deseas eliminar los CSD actuales?')) {
+                   fetch("{% url 'eliminar_csd' %}", {
+                       method: "POST",
+                       headers: {
+                           "Content-Type": "application/json",
+                           "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                       }
+                   })
+                   .then(response => response.json())
+                   .then(data => {
+                       if (data.success) {
+                           alert(data.message);  // Mostrar mensaje de éxito
+                       } else {
+                           alert(data.message);  // Mostrar mensaje de error
+                       }
+                   })
+                   .catch(error => {
+                       alert('Error en la petición');
+                       console.error('Error al eliminar CSD:', error);
+                   });
+               }
+           });
+          
      </script>
-</head>
-
-<body>
-     <header class="">
-          <nav class="navbar bg-body-tertiary fixed-top">
-               <div class="container-fluid d-flex justify-content-between align-items-center">
-                    <div class="d-flex align-items-center">
-                         <!-- Botón del Regreso -->
-                         <a class="navbar-toggler ms-2" type="button" href="{% url 'config_org' %}"">
-                              <span class=""><img src="{% static 'img/arrow-left-square.svg' %}" style="width: 20pt;" alt=""></span>
-                         </a>
-                    </div>
-               </div>
-          </nav>
-     </header>
-
-     <div class="container mt-5" style="margin-top: 200pt;">
-          <h1 style="margin-top: 90pt;">Cargar Certificado de Sello Digital (CSD)</h1>
-
-          {% if messages %}
-          <ul class="messages">
-               {% for message in messages %}
-               <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-                    {% endfor %}
-          </ul>
-          {% endif %}
-          <form method="post" enctype="multipart/form-data">
-               {% csrf_token %}
-               {{ form.as_p }}
-               <div class="alert alert-warning " id="alert" role="alert">
-                    <h3 class="text-center">Consideraciones</h3>
-                    Valides Obligaciones
-                    <ol>
-                    <li>Habilitado para facturar (IVA exento, tasa 0% y 16%)</li>
-                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Norte</li>
-                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Sur</li>
-                    <li>Habilitado para facturar (IVA exento, tasa 0%, 8% y 16%) Zona Fronteriza Norte y Sur</li>
-                    </ol>
-               </div>
-               <button type="submit" class="btn btn-primary">Cargar CSD</button>
-               <button type="button" class="btn btn-danger" id="delete-csd-btn">Eliminar CSD actuales</button>
-
-          </form>
-     </div>
      
 </body>
 
