@@ -378,41 +378,46 @@ def cargar_csd(request):
 @login_required
 @transaction.atomic
 def eliminar_csd(request):
+    #Verifica si el metodo de la solicitud es POST
     if request.method == 'POST':
         # Verificamos que la petición es de tipo AJAX
         if request.headers.get('Content-Type') == 'application/json':
             try:
+                #Obtenemos la organizacion asociada al usuario autenticado
                 organizacion = request.user.organizacion
-                # Eliminar los CSD asociados a la organización del usuario
+                # Buscamos el primer CSD asociado a la organización del usuario en la base de datos
                 csd = CSD.objects.filter(organizacion=organizacion).first()
                 
                 #id_organizacion=request.organizacion
-                
+                # Si se encontró un CSD asociado a la organización
                 if csd:
                     # URL de la API de Facturama
                     url = f"{SANDBOX_URL}/api-lite/csds/{csd.rfc}"
-                    # Enviar la solicitud DELETE a la API de Facturama
-                    headers = {
-                        "Authorization": "12345678a",  # Reemplaza con tu API Key
-                        "Content-Type": "application/json"
-                    }
+                    # Enviamos una solicitud DELETE a la API de Facturama usando la URL construida
                     response = requests.delete(url, auth=(USERNAME, PASSWORD))
-                    print(f"Status Code: {response.status_code}")
-                    
+                    # Imprimimos el código de estado de la respuesta para depuración
+                    #print(f"Status Code: {response.status_code}")
+                    # Si la respuesta de la API es exitosa (código 200)
                     if response.status_code == 200:
+                        # Eliminamos todos los CSDs relacionados con la organización en la base de datos local
                         CSD.objects.filter(organizacion=organizacion).delete()
                         # Si la eliminación en la API fue exitosa, eliminamos el CSD localmente
                         csd.delete()
+                        # Devolvemos una respuesta JSON indicando éxito
                         return JsonResponse({'success': True, 'message': 'CSD eliminado correctamente de la base de datos y la API'})
                     else:
+                        # Si la eliminación en la API falla, devolvemos un mensaje de error
                         return JsonResponse({'success': False, 'message': 'Error al eliminar el CSD desde la API', 'details': response.json()})
 
                 else:
+                    # Si no se encontró un CSD asociado, devolvemos un mensaje de error
                     return JsonResponse({'success': False, 'message': 'CSD no encontrado'})
 
                     #return JsonResponse({'success': True})
             except Exception as e:
+                # Si ocurre cualquier excepción, devolvemos un mensaje con el error
                 return JsonResponse({'success': False, 'error': str(e)})
+    # Si el método de la solicitud no es POST, devolvemos un mensaje indicando que no está permitido
     return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
 @login_required

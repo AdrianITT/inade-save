@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-9%%ck*j+2bh9m*a5g&dv3ptj6%f=g33&7$s)k-jpjdx31z6#y^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # ID proyect: lucresys
 ALLOWED_HOSTS = ['lucresys.appspot.com','192.168.x.x', 'localhost', '127.0.0.1','www.inade-svr.mx']
