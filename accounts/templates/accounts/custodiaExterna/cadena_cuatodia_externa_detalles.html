@@ -1,0 +1,51 @@
+{% extends 'accounts/base_dashboard.html' %}
+{% load static %}
+{% block title %}Row Custodia Externa detalles{% endblock %}
+{% block header %}Row Cadena de Custodia Externa detalles{% endblock %}
+{% block content %}
+<div class="container-xl">
+     <h1>.</h1>
+     {% for row in rows%}
+          <div class="row">
+               <div class="col-md-6">
+                    <strong>Identificación de Campo: </strong> <p>{{row.identificador_campo}}</p>
+                    <strong>Fecha de Muestreo: </strong><p>{{row.datetime_muestreo}}</p>
+                    <strong>Hora Final: </strong><p>{{row.horafinal}}</p>
+                    <strong>id. Filtro: </strong><p>{{row.id_filtor}}</p>
+                    <strong>Origen de Muestra: </strong><p>{{row.origen_muestra}}</p>
+                    <strong>Unidad de Medida: </strong><p>{{row.iunidad_medida}}</p>
+               </div>
+          
+               <div class="col-md-6">
+                    <!--despliege de matriz-->
+               <h5>Matriz</h5>
+                    <div class="row">
+                         {% for matriz_row in matriz_rows %}
+                              <div class="col-6 col-sm-3">{{ matriz_row.letra_matriz }}</div>
+                              <div class="col-6 col-sm-3">{{ matriz_row.id }}</div>
+                              <div class="w-100"></div>
+                         {% endfor %}
+                    </div>
+                    <!--depliege de perservadores-->
+                    <h5>Perservadores</h5>
+                    <div class="row">
+                         {% for perservador_row in perservador_rows %}
+                              <div class="col-6 col-sm-3">{{ perservador_row.name_perservador }}</div>
+                              <div class="col-6 col-sm-3">{{ perservador_row.id }}</div>
+                              <div class="w-100"></div>
+                         {% endfor %}
+                    </div>
+                    <!--despliege de parametro analitico-->
+                    <h5>parametro analitico</h5>
+                    <div class="row">
+                         {% for parametro_analitico_row in parametro_analitico_rows %}
+                              <div class="col-6 col-sm-3">{{ parametro_analitico_row.opcin_analitic}}</div>
+                              <div class="col-6 col-sm-3">{{ parametro_analitico_row.id }}</div>
+                              <div class="w-100"></div>
+                         {% endfor %} 
+                    </div>
+               </div>
+          </div>
+     {%endfor%}
+</div>
+{% endblock %}

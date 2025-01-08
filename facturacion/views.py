@@ -1058,3 +1058,5 @@ def search_cfdi_return(id):
     url = f"{SANDBOX_URL}/api-lite/cfdis/{id}"   
     response = requests.get(url, auth=(USERNAME, PASSWORD))
     return response
+
+

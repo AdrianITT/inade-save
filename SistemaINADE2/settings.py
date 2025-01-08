@@ -30,13 +30,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-9%%ck*j+2bh9m*a5g&dv3ptj6%f=g33&7$s)k-jpjdx31z6#y^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # ID proyect: lucresys
-ALLOWED_HOSTS = ['lucresys.appspot.com','192.168.x.x', 'localhost', '127.0.0.1','www.inade-svr.mx']
+ALLOWED_HOSTS = ['lucresys.appspot.com','192.168.x.x', 'localhost', '127.0.0.1','www.inade-svr.mx','5ba4-187-189-29-33.ngrok-free.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://9411-187-190-138-37.ngrok-free.app'
+    'https://5ba4-187-189-29-33.ngrok-free.app'
 ]
 
 # Application definition
@@ -150,7 +150,7 @@ STATICFILES_DIRS = [
 ]
 
 # Configuración para la recopilación de archivos estáticos en producción
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+TATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Añade estas líneas para manejar archivos multimedia
 MEDIA_URL = '/media/'

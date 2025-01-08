@@ -2,9 +2,10 @@ from django import forms
 
 # accounts/forms.py
 from .utils import obtener_configuracion
-from .models import  Concepto, ConfiguracionSistema, CustomUser, FormatoCotizacion, FormatoOrden, Metodo, OrdenTrabajo, Organizacion, Persona, Prospecto, Empresa, Direccion, InformacionContacto, Queja, Servicio, Cotizacion, Titulo
+from .models import  Concepto, ConfiguracionSistema, CustomUser, FormatoCotizacion, FormatoOrden, Metodo, OrdenTrabajo, Organizacion, Persona, Prospecto, Empresa, Direccion, InformacionContacto, Queja, Servicio, Cotizacion, Titulo, outer_chain_row,Matriz,Preservador
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import inlineformset_factory
+
 
 # ---      USUARIOS     ---
 #   FORMULARIO PARA CREAR USUARIO
@@ -82,7 +83,7 @@ class EmpresaForm(forms.ModelForm):
         fields = ['nombre_empresa','regimen_fiscal','rfc', 'moneda', 'condiciones_pago',
                   'calle', 'numero', 'colonia', 'ciudad', 'codigo', 'estado']
         widgets = {
-            'nombre_empresa': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa el Nombre de la Empresa ', 'required': 'True'}),
+            'nombre_empresa': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa el Nombre de la Empresa ', 'required': 'True','oninput': 'this.value = this.value.toUpperCase();'}),
             'regimen_fiscal': forms.Select(attrs={'class':'form-select'}),
             'rfc': forms.TextInput(attrs={'class':'form-control'}),
             'moneda': forms.Select(attrs={'class': 'form-select'}),
@@ -373,3 +374,27 @@ class ConfiguracionSistemaForm(forms.ModelForm):
             'tipo_de_cambio_dolar': forms.TextInput(attrs={'class':'form-control'})
         }
         
+#--- cadena de custodia externa---
+class crear_custodia_externa(forms.ModelForm):
+    class Meta:
+        model=outer_chain_row
+        fields=['datetime_muestreo','horafinal','id_laboratorio','id_filtor','origen_muestra','id_contenedor','iunidad_medida','identificador_campo']
+        widgets={
+            'datetime_muestreo': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'horafinal': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'id_laboratorio':forms.TextInput(attrs={'class':'form-control'}),
+            'id_filtor':forms.TextInput(attrs={'class':'form-control'}),
+            'origen_muestra':forms.TextInput(attrs={'class':'form-control'}),
+            'matriz': forms.MultipleChoiceField(
+                choices=Matriz.letra_matriz,  # Las opciones predefinidas en el modelo
+                widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+            ),
+            'preservadores': forms.MultipleChoiceField(
+                choices=Preservador.name_perservador,  # Las opciones predefinidas en el modelo
+                widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
+                required=False,  # Si no es obligatorio
+            ),
+        }
+    #matriz=forms.ModelMultipleChoiceField(queryset=Matriz.objects.all(), widget=forms.SelectMultiple, required=False)
+    
+    

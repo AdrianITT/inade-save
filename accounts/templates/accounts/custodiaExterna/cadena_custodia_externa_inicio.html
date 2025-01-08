@@ -1,0 +1,192 @@
+
+{% extends 'accounts/base_dashboard.html' %}
+{% load static %}
+{% block title %}Custodia Externa{% endblock %}
+{% block header %}Cadena de Custodia Externa{% endblock %}
+{% block content %}
+<div class="container-xl">
+
+     <div class="row">
+          <div class="col">
+               <h1 class="text-center">Custodia Externa</h1>
+               <hr class="featurette-divider">
+          </div>
+     </div>
+
+     <!--boton para crear custodia externa-->
+     <div>
+          <div class="row mb-3 justify-content-end">
+               <div class="col-auto">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#creaCustodiaExterna">
+                        Crear custodia externa
+                    </button>
+               </div>
+          </div>
+     </div>
+     <!--Modal para crear custodia externa-->
+     <div class="modal fade" id="creaCustodiaExterna" tabindex="-1" aria-labelledby="creaCustodiaExterna" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="createCustodiaExLabel">Registrar Custodia Externa</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+      
+                  <div class="modal-body">
+                      <form method="post" action="{% url 'crear_custodia_externa' %}" id="newCustodiaEx">
+                          {% csrf_token %}
+                          <div class="row">
+                              <!-- Datos del Cliente -->
+                              <div class="col">
+                                  <h6 class="text-primary">Datos del Cliente/Contacto</h6>
+                                  <div class="form-group">
+                                      <label for="orden_trabajo">Orden de Trabajo: <code>*</code></label>
+                                      <input type="text" name="id_orden_trabajo" class="form-control" id="orden_trabajo" placeholder="Ingrese el número de orden">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="cliente">Cliente: <code>*</code></label>
+                                      <input type="text" name="cliente" class="form-control" id="cliente" placeholder="Ingrese el cliente">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="razon_social">Razón Social: <code>*</code></label>
+                                      <input type="text" name="razon_social" class="form-control" id="razon_social" placeholder="Razón social">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="direccion">Dirección:</label>
+                                      <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Dirección">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="contacto">Contacto:</label>
+                                      <input type="text" name="contacto" class="form-control" id="contacto" placeholder="Contacto">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="puesto_cargo">Puesto/Cargo:</label>
+                                      <input type="text" name="puesto_cargo" class="form-control" id="puesto_cargo" placeholder="Puesto o Cargo">
+                                  </div>
+                              </div>
+      
+                              
+                          </div>
+                      </form>
+                  </div>
+      
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                      <button type="submit" name="action" value="create" class="btn btn-success" form="newCustodiaEx">Crear</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--tabla que muestra las custodias externas creadas-->
+      <table id="custodiaExternaTable" class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th><a class="link-secondary" href="?order_by=ce">#</a></th>
+                <th><a class="link-secondary" href="?order_by=nombre"><a>Orden de trabajo</a></th>
+                <th colspan="1"></th>
+                <th colspan="1"></th>
+                <th colspan="1"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cadena_externa in cadena_externas %}
+                <tr>
+                    <td>{{ cadena_externa.ce }}</td>
+                    <td>
+                        {{ cadena_externa.id_orden_trabajo }}
+                    </td>
+                    <td><a href="{% url 'row_custodia_externa' cadena_externa.ce %}"
+                        class="btn btn-success btn-sm"> Filas </a>
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-success btn-sm">Custodia 1</a>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm" 
+                        data-bs-target="#ModificacionOT" data-bs-toggle="modal">Modificacion OT</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>   
+      
+      <div class="modal fade" id="ModificacionOT" aria-labelledby="ModificacionOT" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Firma Digital</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Firma Digital</title>
+                    <style>
+                        #firmaCanvas {
+                            border: 3px solid black;
+                            width: 100%;
+                            height: 300px;
+                        }
+                        .btn {
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Firma Digital</h2>
+                    <canvas id="firmaCanvas"></canvas>
+                    <button class="btn" onclick="clearCanvas()">Limpiar Firma</button>
+                    <button class="btn" onclick="saveSignature()">Guardar Firma</button>
+                    
+                    <script>
+                        const canvas = document.getElementById('firmaCanvas');
+                        const ctx = canvas.getContext('2d');
+                
+                        let isDrawing = false;
+                
+                        // Ajuste el tamaño del lienzo
+                        canvas.width = 800;
+                        canvas.height = 300;
+                
+                        // Iniciar dibujo
+                        canvas.addEventListener('mousedown', (e) => {
+                            isDrawing = true;
+                            ctx.beginPath();
+                            ctx.moveTo(e.offsetX , e.offsetY );
+                        });
+                
+                        // Dibujar la firma
+                        canvas.addEventListener('mousemove', (e) => {
+                            if (isDrawing) {
+                                ctx.lineTo(e.offsetX, e.offsetY);
+                                ctx.stroke();
+                            }
+                        });
+                
+                        // Dejar de dibujar
+                        canvas.addEventListener('mouseup', () => {
+                            isDrawing = false;
+                        });
+                
+                        // Limpiar el lienzo
+                        function clearCanvas() {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }
+                
+                        // Guardar la firma (por ejemplo, convertirla en imagen)
+                        function saveSignature() {
+                            const dataUrl = canvas.toDataURL('image/png');
+                            console.log('Firma guardada: ', dataUrl);
+                            // Aquí podrías hacer una solicitud para enviar esta imagen al servidor
+                        }
+                    </script>
+            </div>
+        </div>
+    </div>
+
+    
+
+      
+</div>
+{% endblock %}

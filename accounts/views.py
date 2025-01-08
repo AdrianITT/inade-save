@@ -56,3 +56,5 @@ def borrar_notificacion(request, pk):
 def initial_setup(request):
     return render(request, 'initial_setup.html')
 
+def custodia_externa(request):
+    return render(request,'cadena_custodia_externa_inicio.html')

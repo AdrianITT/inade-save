@@ -6,6 +6,8 @@ from .models import CSD, Factura
 from django.forms import  formset_factory
 from .models import Factura
 from datetime import datetime, timedelta, timezone
+from accounts.models import Contenedor, Preservador, prioridad
+
 
 MOTIVOS = [
     ('01','01 - Comprovante emitido con errores con relación.'),

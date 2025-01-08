@@ -3,7 +3,7 @@ from SistemaINADE2 import settings
 from django.conf.urls.static import static
 from accounts import views
 from accounts.views import notificaciones, marcar_notificacion_leida
-from accounts.vistas import views_clientes, views_cotizaciones_aceptadas, views_empresas, views_guia, views_orden_trabajo, views_usuarios, views_prospectos, views_autenticacion, views_home, views_cotizaciones, views_servicios, views_correos, views_organizacion
+from accounts.vistas import views_clientes, views_cotizaciones_aceptadas, views_empresas, views_guia, views_orden_trabajo, views_usuarios, views_prospectos, views_autenticacion, views_home, views_cotizaciones, views_servicios, views_correos, views_organizacion,views_custodia_externa
 from django.contrib.auth import views as auth_views
 from accounts.vistas.views_autenticacion import CustomPasswordResetView, initial_setup
 
@@ -130,6 +130,15 @@ urlpatterns = [
     #   ---     GUIA DE OPERACIONES       ---
     path('guia_operaciones/', views_guia.guia_operaciones, name='guia_operaciones'),
     path('guia_operaciones/usuarios', views_guia.guia_add_u, name='guia_add_u'),
+    
+    
+    # ---   custodia externa    ---
+    path('custodia_externa/',views_custodia_externa.custodias, name='custodia_acep'),
+    path('crear_custodia_externa/',views_custodia_externa.crear_custodia_externa, name='crear_custodia_externa'),
+    path('row_custodia_externa/<int:id_ce>/',views_custodia_externa.row_custodia_externa,name='row_custodia_externa'),
+    path('datos_custodia/', views_custodia_externa.row_datos_custodia, name='datos_custodia_externa'),
+    path('datos_custodia/detalles/<int:id_outer_chain>/', views_custodia_externa.row_detalles, name='detalles_custodia'),
+    path('end_custody/<int:id_outer_chain>/',views_custodia_externa.end_external_custody, name='end_custody'),
 ]
 # Solo sirve archivos en desarrollo
 if settings.DEBUG:  # Solo sirve archivos en desarrollo

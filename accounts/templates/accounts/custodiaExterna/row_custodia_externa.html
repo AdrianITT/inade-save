@@ -1,0 +1,315 @@
+{% extends 'accounts/base_dashboard.html' %}
+{% load static %}
+{% block title %}Row Custodia Externa{% endblock %}
+{% block header %}Row Cadena de Custodia Externa{% endblock %}
+{% block content %}
+<div class="container-xl">
+    {% for row in rows %}
+     <h1>Fila de la Custodia Externa {{row.id_orden_trabajo}}</h1>
+     {% endfor %}
+     <!--boton para crear custodia externa-->
+     <div>
+        <div class="row mb-3 justify-content-end">
+             <div class="col-auto">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#datosCustodia">
+                      Crear Fila
+                  </button>
+             </div>
+        </div>
+   </div>
+   <div>
+
+    <ul class="nav nav-tabs"> <!-- CONTENEDOR DE LINKS DE PESTAÑAS -->
+        <li class="nav-item">
+            <a class="nav-link active" href="#filas_activas" data-bs-toggle="tab">Filas en Proceso</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link " href="#filas_inactivas" data-bs-toggle="tab">Filas Terminadas</a>
+        </li>
+    </ul>
+<div class="tab-content">
+   <!-- Tabla de los row(filas activas) -->
+    <div class="tab-pane fade show active" id="filas_activas">
+        <table id="custodiaExternaTable" class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th><a class="link-secondary" href="?order_by=ce">Identificación de campo</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre">Fecha de muestreo</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre">Hora Final</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre"></a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre"></a></th>
+        
+                </tr>
+            </thead>
+            <tbody>
+                {% for desplay_row in page_obj %}
+                    <tr>
+                        <td>{{ desplay_row.identificador_campo }}</td>
+                        <td>{{ desplay_row.datetime_muestreo }}</td>
+                        <td>{{ desplay_row.horafinal }}</td>
+                        <td>
+                            <a href="{% url 'detalles_custodia' desplay_row.externa_row %}"
+                                class="btn btn-success btn-sm"> Detalles </a>
+                        </td>
+                        <td> <a href="{% url 'end_custody' desplay_row.externa_row%}" class="btn btn-warning btn-sm"> finalizar</a> </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- Paginación -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; Primero</a> <!-- Ir a la primera página -->
+                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a> <!-- Página anterior -->
+            {% else %}
+                <span>Primero</span>
+                <span>Anterior</span>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a> <!-- Página siguiente -->
+                <a href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a> <!-- Última página -->
+            {% else %}
+                <span>Siguiente</span>
+                <span>Último</span>
+            {% endif %}
+        </span>
+    </div>
+    </div>
+
+    <!-- Tabla de los row(filas inactivas) -->
+    <div class="tab-pane fade show" id="filas_inactivas"    >
+        <table id="custodiaExternaTable" class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th><a class="link-secondary" href="?order_by=ce">Identificación de campo</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre">Fecha de muestreo</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre">Hora Final</a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre"></a></th>
+                    <th colspan="1"><a class="link-secondary" href="?order_by=nombre"></a></th>
+        
+                </tr>
+            </thead>
+            <tbody>
+                {% for desplay_row in page_obj_complet %}
+                    <tr>
+                        <td>{{ desplay_row.identificador_campo }}</td>
+                        <td>{{ desplay_row.datetime_muestreo }}</td>
+                        <td>{{ desplay_row.horafinal }}</td>
+                        <td>
+                            <a href="{% url 'detalles_custodia' desplay_row.externa_row %}"
+                                class="btn btn-success btn-sm"> Detalles </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj_complet.has_previous %}
+                    <a href="?page=1">&laquo; Primero</a> <!-- Ir a la primera página -->
+                    <a href="?page={{ page_obj_complet.previous_page_number }}">Anterior</a> <!-- Página anterior -->
+                {% else %}
+                    <span>Primero</span>
+                    <span>Anterior</span>
+                {% endif %}
+    
+                <span class="current">
+                    Página {{ page_obj_complet.number }} de {{ page_obj_complet.paginator.num_pages }}.
+                </span>
+    
+                {% if page_obj_complet.has_next %}
+                    <a href="?page={{ page_obj_complet.next_page_number }}">Siguiente</a> <!-- Página siguiente -->
+                    <a href="?page={{ page_obj_complet.paginator.num_pages }}">Último &raquo;</a> <!-- Última página -->
+                {% else %}
+                    <span>Siguiente</span>
+                    <span>Último</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+
+
+<!-- Datos de la fila -->
+<div>
+    <div class="modal fade" id="detallesFilaCustodia" tabindex="-1" aria-labelledby="detallesFilaCustodia" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCustodiaExLabel">Registrar Custodia Externa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Iterar sobre las filas de la página actual -->
+                        {% for row in page_obj %}
+                            <p>{{ row.identificador_campo }}</p>
+                            <p>{{ row.datetime_muestreo }}</p>
+                            <p>{{ row.horafinal }}</p>
+                            {% for matriz in matriz_letras %}
+                                <p>{{ matriz }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!--ingresar nuevas filas-->
+    <div class="modal fade" id="datosCustodia" tabindex="-1" aria-labelledby="datosCustodia" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCustodiaExLabel">Registrar Custodia Externa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+    
+                <div class="modal-body">
+                    
+                    <form method="post" action="{% url 'datos_custodia_externa' %}" id="datosCustodias">
+                        {% csrf_token %}
+                            <div class="row">
+        
+                                <!-- Datos de la Custodia -->
+                                <div class="col-md-6">
+                                    <h6 class="text-primary">Datos de la Custodia</h6>
+                                    <div class="form-group row">
+                                        <label class="text-center">Indetificacion de campo</label>
+                                        <div class="col-6 col-sm-4">
+                                            <label for="claves_row">Clave:</label>
+                                            <select class="form-control" name="claves_row" id="claves_row">
+                                                {% for claves_rows in claves_row %} 
+                                                <option value="{{ claves_rows.id }}">{{ claves_rows.name_clave }}</option>
+                                                {%endfor%}
+                                             </select>
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label>Numero:</label>
+                                            <input type="number" name="number" class="form-control"id="number" placeholder="Numero" min="0" max="100">
+                                        </div>
+                                        <div class="col-6 col-sm-4">
+                                            <label>Clave:</label>
+                                            <select class="form-control" name="letra_row" id="letra_row">
+                                                <option value="A">A</option><option value="B">B</option>
+                                                <option value="C">C</option><option value="D">D</option>
+                                                <option value="E">E</option>
+                                               
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fecha_muestreo">Fecha de Muestreo:</label>
+                                        <input type="date" name="datetime_muestreo" class="form-control" id="fecha_muestreo" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hora_final">Hora Final:</label>
+                                        <input type="date" name="hora_final" class="form-control" id="hora_final">
+                                    </div>
+                                    <div class="form-group">
+                                    <label for="id_filtro">Id Filtro:</label>
+                                    <input type="text" name="id_filtro" class="form-control" id="id_filtro">
+                                </div>
+                                <div class="form-group">
+                                        <label for="matrices">Matriz:</label>
+                                        <div class="row">
+                                        {% for matriz in matrices%}
+                                        <div class="col-sm">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="matrices[]" value="{{matriz.id}}" id="matriz_{{ matriz.id }}">
+                                                <label class="form-check-label" for="matriz_{{ matriz.id }}">{{matriz.letra_matriz}}</label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="preservadores">Preservadores:</label>
+                                        <div class="row">
+                                        {% for preservador in preservadores %}
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="preservadores[]" value="{{ preservador.id }}" id="preservador_{{ preservador.id }}">
+                                                    <label class="form-check-label" for="preservador_{{ preservador.id }}">{{ preservador.name_perservador }}</label>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!---->
+                                <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="contenedor">Contenedor:</label>
+                                            <select class="form-control" name="contenedor" id="contenedor">
+                                                {% for contenedor in contenedores %}
+                                                <option value="{{ contenedor.id }}">{{ contenedor.name_contenedor }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="volumen">Volumen/Cantidad:</label>
+                                        <input type="text" name="volumen_cantidad" class="form-control" id="volumen_cantidad" placeholder="Ingrese el volumen (L, Kg)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prioridad">Grado de Prioridad:</label>
+                                        <select class="form-control" name="id_prioridad" id="prioridad">
+                                            {% for prioridad in prioridades %}
+                                            <option value="{{ prioridad.id }}">{{ prioridad.categoria }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label >ID de Laboratorio:</label>
+                                        <div class="col-6 col-sm-4">
+                                            <label for="laboratorio">Fecha:</label>
+                                            <input type="date" name="id_laborratorio" class="form-control" id="laboratorio">  
+                                             
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label for="numero_laboratorio">Numero:</label>
+                                            <input type="number" name="numero_laboratorio" class="form-control" id="numero_laboratorio" placeholder="Numero" min="0" max="100">
+                                        </diV>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="origen_muestra">origen de la muestra:</label>
+                                        <textarea type="text" name="origen_muestra" class="form-control" id="origen_muestra"></textarea>
+                                    </div>
+                                        <div class="form-group">
+                                            <label for="parametro_analiticos">parametro analitico:</label>
+                                            <div class="row">
+                                            {% for parametro_analitico in parametro_analiticos %}
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="parametro_analiticos[]" value="{{ parametro_analitico.id }}" id="parametro_analitico_{{ parametro_analitico.id }}">
+                                                        <label class="form-check-label" for="parametro_analitico_{{ parametro_analitico.id }}">{{ parametro_analitico.opcin_analitic }}</label>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="action" value="create" class="btn btn-success" form="datosCustodias">Crear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import  BaseUserManager, AbstractUser
 from django.utils.translation import gettext_lazy as _
+from django.utils.crypto import get_random_string
 
 opciones_iva = [
     ('0.08', '8%'),
@@ -450,3 +451,98 @@ class Queja(models.Model):
 
     def __str__(self):
         return f"{self.asunto} ({self.prioridad})"
+
+#Cadena de custodia     
+#MODELO DE MATRIZ
+class Matriz(models.Model):
+    letra_matriz=models.CharField(max_length=20, null=True)
+    
+    def __str__(self):
+        return self.letra_matriz
+    
+#MODELO DECONTENEDORES
+class Contenedor(models.Model):
+    letra_contenedor=models.CharField(max_length=255, unique=True,null=True)
+    name_contenedor=models.CharField(max_length=5, unique=True)
+    
+    def __str__(self):
+        return self.name_contenedor
+    
+#MODELO DE PRESERVADOR
+class Preservador(models.Model):
+    name_perservador=models.CharField(max_length=20)
+    
+#MODELO DE TIPOS DE MUESTRA
+class sample_type(models.Model):
+    name_type=models.CharField(max_length=20)
+    
+#MODELO DE CLAVE
+class claves(models.Model):
+    name_clave=models.CharField(max_length=30)
+    
+#MODELO DE PRIORIDAD 
+class prioridad(models.Model):
+    categoria=models.CharField(max_length=2)
+    day=models.CharField(max_length=3)
+    day_min=models.CharField(max_length=3, default=0)
+    
+#MODELO DE PARAMENRTRO ANALITICO
+class parametro_analitico(models.Model):
+    opcin_analitic=models.CharField(max_length=30)
+    
+#MODEL DE UNIDE DE MEDIDA
+class unidad_medida(models.Model):
+    medida=models.CharField(max_length=5)
+    def __str__(self):
+        return self.medida
+    
+#MODELO DE INFORMACION DEL CLIENTE
+class info_cliente(models.Model):
+    razon_social=models.CharField(max_length=30)
+    direccion_cliente=models.CharField(max_length=200)
+    contacto_cliente=models.CharField(max_length=30)
+    puesto_cargo=models.CharField(max_length=100)
+    
+#MODELO DE CADENA EXTERNA
+class cadena_externa(models.Model):
+    ce=models.AutoField(primary_key=True)
+    id_orden_trabajo=models.CharField(max_length=100, null=True)
+    id_inforclient=models.ForeignKey(info_cliente,on_delete=models.CASCADE, null=True)
+    
+#MODELO DE CADENA EXTERNA
+class outer_chain_row(models.Model):
+    externa_row=models.AutoField(unique=True, blank=True, primary_key=True)
+    ce=models.ForeignKey(cadena_externa, on_delete=models.CASCADE, null=True) 
+    id_contenedor=models.ForeignKey(Contenedor, on_delete=models.CASCADE, null=True)
+    id_type=models.ForeignKey(sample_type,on_delete=models.CASCADE, null=True)
+    id_clave=models.ForeignKey(claves,on_delete=models.CASCADE, null=True)
+    id_prioridad=models.ForeignKey(prioridad,on_delete=models.CASCADE, null=True)
+    id_laboratorio=models.CharField(max_length=100)
+    datetime_muestreo=models.DateField(editable=True, default=timezone.now)
+    horafinal=models.DateField(default=timezone.now)
+    id_filtor=models.CharField(max_length=10)
+    origen_muestra=models.CharField(max_length=50)
+    iunidad_medida=models.ForeignKey(unidad_medida,on_delete=models.CASCADE, null=True)
+    identificador_campo=models.CharField(max_length=10, default='null')
+    complet=models.BooleanField(default=0)
+    
+    
+#MODELO DE CADENA INTERNA
+class cadena_interna(models.Model):
+    outer_chain_row=models.ForeignKey(outer_chain_row,on_delete=models.CASCADE, null=True)
+    
+    
+#MODELO DE INTERMEDIARIO DE PARAMETRO ANALITICO
+class inte_parametro_analitico(models.Model):
+    parametro_analitico=models.ForeignKey(parametro_analitico, on_delete=models.CASCADE, null=True)
+    externa_row=models.ForeignKey(outer_chain_row, on_delete=models.CASCADE, null=True)
+    
+#MODELO DE PERSERVADOR INTERMEDIARIO
+class inte_perservador(models.Model):
+    preservador=models.ForeignKey(Preservador,on_delete=models.CASCADE, null=True)
+    externa_row=models.ForeignKey(outer_chain_row,on_delete=models.CASCADE, null=True)
+
+#MODELO DE MATRIZ INTERMEDIARIO
+class inte_matriz(models.Model):
+    matriz=models.ForeignKey(Matriz,on_delete=models.CASCADE, null=True)
+    externa_row=models.ForeignKey(outer_chain_row,on_delete=models.CASCADE, null=True)
