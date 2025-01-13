@@ -519,7 +519,7 @@ class outer_chain_row(models.Model):
     id_prioridad=models.ForeignKey(prioridad,on_delete=models.CASCADE, null=True)
     id_laboratorio=models.CharField(max_length=100)
     datetime_muestreo=models.DateField(editable=True, default=timezone.now)
-    horafinal=models.DateField(default=timezone.now)
+    horafinal=models.TimeField(null=True)
     id_filtor=models.CharField(max_length=10)
     origen_muestra=models.CharField(max_length=50)
     iunidad_medida=models.ForeignKey(unidad_medida,on_delete=models.CASCADE, null=True)

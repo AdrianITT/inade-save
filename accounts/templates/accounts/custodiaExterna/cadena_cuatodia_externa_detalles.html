@@ -14,6 +14,12 @@
                     <strong>id. Filtro: </strong><p>{{row.id_filtor}}</p>
                     <strong>Origen de Muestra: </strong><p>{{row.origen_muestra}}</p>
                     <strong>Unidad de Medida: </strong><p>{{row.iunidad_medida}}</p>
+                    <div>
+                         {% for contenedor_row in contenedor_rows %}
+                              <strong>Contenedor:</strong><p>{{ contenedor_row.name_contenedor }}</p>
+                              <div class="w-100"></div>
+                         {% endfor %}
+                    </div>
                </div>
           
                <div class="col-md-6">

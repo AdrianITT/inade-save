@@ -83,13 +83,13 @@ class EmpresaForm(forms.ModelForm):
         fields = ['nombre_empresa','regimen_fiscal','rfc', 'moneda', 'condiciones_pago',
                   'calle', 'numero', 'colonia', 'ciudad', 'codigo', 'estado']
         widgets = {
-            'nombre_empresa': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa el Nombre de la Empresa ', 'required': 'True','oninput': 'this.value = this.value.toUpperCase();'}),
+            'nombre_empresa': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingresa el Nombre de la Empresa ', 'required': 'True'}),
             'regimen_fiscal': forms.Select(attrs={'class':'form-select'}),
             'rfc': forms.TextInput(attrs={'class':'form-control'}),
             'moneda': forms.Select(attrs={'class': 'form-select'}),
             'condiciones_pago': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Días de pago '}),
         }
-
+#,'oninput': 'this.value = this.value.toUpperCase();'
 # ---      CLIENTES     ---
 
 #   FORMULARIO PARA INFROMACION DE CONTACTO

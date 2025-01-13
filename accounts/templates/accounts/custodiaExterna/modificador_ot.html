@@ -1,0 +1,81 @@
+{% extends 'accounts/base_dashboard.html' %}
+{% load static %}
+{% block title %}Custodia Externa{% endblock %}
+{% block header %}Cadena de Custodia Externa{% endblock %}
+{% block content %}
+<div class="container-xl">
+     <div class="modal fade" id="ModificacionOT" aria-labelledby="ModificacionOT" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">ModificacionOT</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <head>
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <title>Firma Digital</title>
+                      <style>
+                          #firmaCanvas {
+                              border: 3px solid black;
+                              width: 25%;
+                              height: 75px;
+                          }
+                          .btn {
+                              margin-top: 20px;
+                          }
+                      </style>
+                  </head>
+                  <body>
+                      <h2>Firma Digital</h2>
+                      <canvas id="firmaCanvas"></canvas>
+                      <button class="btn" onclick="clearCanvas()">Limpiar Firma</button>
+                      <button class="btn" onclick="saveSignature()">Guardar Firma</button>
+                      
+                      <script>
+                          const canvas = document.getElementById('firmaCanvas');
+                          const ctx = canvas.getContext('2d');
+                  
+                          let isDrawing = false;
+                  
+                          // Ajuste el tamaño del lienzo
+                          canvas.width = 200;
+                          canvas.height = 75;
+                  
+                          // Iniciar dibujo
+                          canvas.addEventListener('mousedown', (e) => {
+                              isDrawing = true;
+                              ctx.beginPath();
+                              ctx.moveTo(e.offsetX , e.offsetY );
+                          });
+                  
+                          // Dibujar la firma
+                          canvas.addEventListener('mousemove', (e) => {
+                              if (isDrawing) {
+                                  ctx.lineTo(e.offsetX, e.offsetY);
+                                  ctx.stroke();
+                              }
+                          });
+                  
+                          // Dejar de dibujar
+                          canvas.addEventListener('mouseup', () => {
+                              isDrawing = false;
+                          });
+                  
+                          // Limpiar el lienzo
+                          function clearCanvas() {
+                              ctx.clearRect(0, 0, canvas.width, canvas.height);
+                          }
+                  
+                          // Guardar la firma (por ejemplo, convertirla en imagen)
+                          function saveSignature() {
+                              const dataUrl = canvas.toDataURL('image/png');
+                              console.log('Firma guardada: ', dataUrl);
+                              // Aquí podrías hacer una solicitud para enviar esta imagen al servidor
+                          }
+                      </script>
+              </div>
+          </div>
+      </div>
+</div>
+{% endblock %}

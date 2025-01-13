@@ -33,11 +33,28 @@ def crear_custodia_externa(request):
             puesto_cargo=request.POST['puesto_cargo'],
         )
         
+        #formato de id OT
+        fecha_id_laboratorio=request.POST['id_orden de trabajo']
+        numero_id_laboratorio=int(request.POST['numero_trabajo'])
+        fecha_id_laboratorio_datetime = datetime.strptime(fecha_id_laboratorio, "%Y-%m-%d")
+        year_id=fecha_id_laboratorio_datetime.year
+        month_id=fecha_id_laboratorio_datetime.month
+        day_id=fecha_id_laboratorio_datetime.day
+        
+        #formato de id OT
+        year_format=f"{year_id % 100:02d}"
+        month_format= f"{month_id:02d}"
+        day_format= f"{day_id:02d}"
+        numeri_id_lab= f"{numero_id_laboratorio:02d}"
+        
+        #formato orden de trabajo
+        order_format=f"{year_format}{month_format}{day_format}-{numeri_id_lab}"
+        
 
         # Crear el objeto de cadena_externa primero
         cadena_externa_obj = cadena_externa.objects.create(
             id_inforclient=cliente_obj,
-            id_orden_trabajo=request.POST['id_orden_trabajo'],)  # Crea el objeto cadena_externa
+            id_orden_trabajo=order_format,)  # Crea el objeto cadena_externa
         
         # Crear un nuevo objeto de outer_chain_row
         #outer_chain = outer_chain_row.objects.create(
@@ -125,8 +142,8 @@ def row_datos_custodia(request):
         
         datetime_muestreo_str = request.POST['datetime_muestreo']
         datetime_muestreo = datetime.strptime(datetime_muestreo_str, '%Y-%m-%d')  # Convierte la cadena a un objeto datetime
-        horafinal_str=request.POST['hora_final']
-        horafinal=datetime.strptime(horafinal_str, '%Y-%m-%d')
+        #horafinal_str=request.POST['hora_final']
+        #horafinal=datetime.strptime(horafinal_str, '%H:%M')
         
         # Obtener los valores del formulario
         claves_row_id = request.POST.get('claves_row')
@@ -158,7 +175,7 @@ def row_datos_custodia(request):
         outer_chain=outer_chain_row.objects.create(
             ce=cadena_externa_obj, # Aquí estamos vinculando la llave foránea
             datetime_muestreo=datetime_muestreo,  # Asignamos la fecha y hora seleccionada
-            horafinal=horafinal,
+            #horafinal=horafinal,
             id_laboratorio=end_format,
             id_filtor=request.POST['id_filtro'],
             origen_muestra=request.POST['origen_muestra'],
@@ -213,6 +230,7 @@ def row_detalles(request, id_outer_chain):
     matriz_rows = Matriz.objects.filter(id__in=[matriz.matriz.id for matriz in int_matriz_row])
     perservador_rows=Preservador.objects.filter(id__in=[preservador.preservador.id for preservador in int_perservador])
     parametro_analitico_rows=parametro_analitico.objects.filter(id__in=[parametro_analitico.parametro_analitico.id for parametro_analitico in int_parametro_analitico])
+    contenedor_rows=Contenedor.objects.filter(id=id_outer_chain)
 
     context={
         'rows':rows,
@@ -220,15 +238,27 @@ def row_detalles(request, id_outer_chain):
         'int_matriz_row':int_matriz_row,
         'perservador_rows':perservador_rows,
         'parametro_analitico_rows':parametro_analitico_rows,
+        'contenedor_rows':contenedor_rows,
     }
     
     return render(request,'accounts/custodiaExterna/cadena_cuatodia_externa_detalles.html',context)
 
 def end_external_custody(request,id_outer_chain):
-    outer_chain_row.objects.filter(externa_row=id_outer_chain).update(complet=True)
+    #horafinal_str = datetime.now()
+    horafinal_str=request.POST['hora_final']
+    # Formatear la hora actual como una cadena
+    if horafinal_str:
+        # Convierte la cadena de hora a un objeto datetime
+        horafinal = datetime.strptime(horafinal_str, "%H:%M").strftime("%H:%M")
+    else:
+        return print("Hora final no proporcionada.", status=400)
+    outer_chain_row.objects.filter(externa_row=id_outer_chain).update(complet=True,horafinal=horafinal)
     outer_chain=outer_chain_row.objects.filter(externa_row=id_outer_chain).first()
     ce = outer_chain.ce.pk
 
     data=row_custodia_externa(request,ce)
     return data
+
+
+
 
